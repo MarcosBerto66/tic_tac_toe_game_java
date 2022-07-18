@@ -3,9 +3,11 @@ package tic_tac_toe_game_java;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Iterator;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 public class Game extends JFrame implements ActionListener{
 	
@@ -30,7 +32,7 @@ public class Game extends JFrame implements ActionListener{
 		int x = 0, y = 0; //Posição inicial dos botões
 		int i = 0;
 		for (int l = 0; l < 3; l++) {
-			for (int c = 0; c < 3; c++) {
+			for (int c = 0; c < 3; c++, i++) {
 				//Criando uma instância de JButton e definindo suas características
 				JButton button = new JButton();
 				button.setSize(width, height);
@@ -57,6 +59,53 @@ public class Game extends JFrame implements ActionListener{
 				button.setText(players[player]);
 				player = 0;
 			}
+			if(gameover()) {
+				int r = JOptionPane.showConfirmDialog(null, "Deseja jogar novamente?");
+				if(r == JOptionPane.YES_OPTION) {
+					play();
+				}else {
+					this.dispose();
+				}
+			}
 		}
+	}
+
+	private void play() {
+		for(JButton i: buttons) {
+			i.setText("");
+		}
+		player = 0;
+	}
+
+	private boolean gameover() {
+		int i = 0;
+		for (int l = 0; l < 3; l++) {
+			String p = "";
+			for (int c = 0; c < 3; c++, i++) {
+				p += buttons[i].getText();
+			}
+			if(p.equals("XXX") || p.equals("OOO")) {
+				return true;
+			}
+		}//Verificando as linhas
+		for (int c = 0; c < 3; c++) {
+			String p = "";
+			i = c;
+			for (int l = 0; l < 3; l++, i+=3) {
+				p += buttons[i].getText();
+			}
+			if(p.equals("XXX") || p.equals("OOO")) {
+				return true;
+			}
+		}//Verificando as colunas
+		String v = buttons[0].getText() + buttons[4].getText() + buttons[8].getText();//Verificando a primeira diagonal
+		if(v.equals("XXX") || v.equals("OOO")) {
+			return true;
+		}
+		v = buttons[2].getText() + buttons[4].getText() + buttons[6].getText();//Verificando a segunda diagonal
+		if(v.equals("XXX") || v.equals("OOO")) {
+			return true;
+		}
+		return false;
 	}
 }
