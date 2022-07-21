@@ -1,5 +1,6 @@
 package tic_tac_toe_game_java;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,25 +12,33 @@ import javax.swing.JOptionPane;
 
 public class Game extends JFrame implements ActionListener{
 	
+	//Cores
+	private Color light_green = new Color(173, 223, 173);
+	private Color green = new Color(0, 154, 117);
+	private Color white = new Color(248, 248, 248);
+	
+	//Elementos
 	private JButton buttons[] = new JButton[9];
 	private int player = 0;
 	private String players[] = {"X", "O"};
 	
 	public Game() {
 		//Definindo as características da JFrame/tela inicial.
-		setSize(605, 640);
+		setSize(590, 613);
 		setLocationRelativeTo(null);
 		setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLayout(null);
+		getContentPane().setBackground(white);
 		init();
 		setVisible(true);
 	}
 
 	private void init() {
 		
-		int width = (getWidth() / 3) - 5, height = ((getHeight() - 40) / 3); //Tamanho dos botões
-		int x = 0, y = 0; //Posição inicial dos botões
+		int width = 170, height = 170; //Tamanho dos botões
+		int margin = 16;
+		int x = margin, y = margin; //Posição inicial dos botões
 		int i = 0;
 		for (int l = 0; l < 3; l++) {
 			for (int c = 0; c < 3; c++, i++) {
@@ -37,14 +46,19 @@ public class Game extends JFrame implements ActionListener{
 				JButton button = new JButton();
 				button.setSize(width, height);
 				button.setLocation(x, y);
-				button.setFont(new Font("Calibri", 0, 104));
+				button.setFont(new Font("Arial Rounded MT Bold", 0, 180));
+				button.setForeground(green);
 				button.addActionListener(this);
+				button.setOpaque(true);
+				button.setBackground(light_green);
+				button.setFocusPainted(false);
+				button.setBorder(null);
 				buttons[i] = button;
 				add(buttons[i]);
-				x += width; 
+				x += width + margin; 
 			}
-			x = 0;
-			y += height;
+			x = margin;
+			y += height + margin;
 		}
 	}
 
@@ -60,7 +74,7 @@ public class Game extends JFrame implements ActionListener{
 				player = 0;
 			}
 			if(gameover()) {
-				int r = JOptionPane.showConfirmDialog(null, "Deseja jogar novamente?");
+				int r = JOptionPane.showConfirmDialog(null,   "Deseja jogar novamente?");
 				if(r == JOptionPane.YES_OPTION) {
 					play();
 				}else {
@@ -68,6 +82,15 @@ public class Game extends JFrame implements ActionListener{
 				}
 			}
 		}
+	}
+	
+	private boolean allAreFull() {
+		for(JButton i: buttons) {
+			if(i.getText().isEmpty()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private void play() {
@@ -79,7 +102,7 @@ public class Game extends JFrame implements ActionListener{
 
 	private boolean gameover() {
 		int i = 0;
-		for (int l = 0; l < 3; l++) {
+		for (int l = 0; l < 3; l++) {//Verificando as linhas
 			String p = "";
 			for (int c = 0; c < 3; c++, i++) {
 				p += buttons[i].getText();
@@ -87,8 +110,8 @@ public class Game extends JFrame implements ActionListener{
 			if(p.equals("XXX") || p.equals("OOO")) {
 				return true;
 			}
-		}//Verificando as linhas
-		for (int c = 0; c < 3; c++) {
+		}
+		for (int c = 0; c < 3; c++) {//Verificando as colunas
 			String p = "";
 			i = c;
 			for (int l = 0; l < 3; l++, i+=3) {
@@ -97,7 +120,7 @@ public class Game extends JFrame implements ActionListener{
 			if(p.equals("XXX") || p.equals("OOO")) {
 				return true;
 			}
-		}//Verificando as colunas
+		}
 		String v = buttons[0].getText() + buttons[4].getText() + buttons[8].getText();//Verificando a primeira diagonal
 		if(v.equals("XXX") || v.equals("OOO")) {
 			return true;
@@ -106,6 +129,6 @@ public class Game extends JFrame implements ActionListener{
 		if(v.equals("XXX") || v.equals("OOO")) {
 			return true;
 		}
-		return false;
+		return allAreFull(); //Verificando se todos os botões possuem conteúdo
 	}
 }
